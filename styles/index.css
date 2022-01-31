@@ -1,0 +1,66 @@
+* {
+  padding: 0px;
+  margin: 0px;
+  box-sizing: border-box;
+}
+
+.box {
+  top: 35%;
+  left: 50%;
+  display: flex;
+  flex-wrap: wrap;
+  height: 500px;
+  position: absolute;
+  background-color: black;
+  transform: translate(-50%, -50%);
+}
+.btn {
+  outline: none;
+  border: none;
+  cursor: pointer;
+  border: 0.5px solid rgb(218, 218, 218);
+}
+.btn.active {
+  background-color: darkcyan;
+}
+
+.color-box {
+  width: 16px;
+  height: 16px;
+}
+.red-box {
+  background-color: red;
+}
+.blue-box {
+  background-color: blue;
+}
+
+.selection-box {
+  display: flex;
+  flex-direction: column;
+  width: 100px;
+}
+input[type="text"] {
+  width: 100px;
+  outline: none;
+}
+.color-red,
+.color-blue {
+  display: flex;
+  padding: 8px;
+  margin: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  align-items: center;
+  border: 1px solid;
+}
+.color-red.active,
+.color-blue.active {
+  background-color: rgba(9, 29, 75, 0.2);
+}
+
+#calculate-btn {
+  outline: none;
+  cursor: pointer;
+  margin: 1rem 0rem;
+}
