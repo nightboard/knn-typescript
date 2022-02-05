@@ -74,24 +74,24 @@ class Grid {
     this.colorValue = color;
   }
 
-  performKNNForAllCell(): void {
+  performKNNForAllCell(weighted: boolean): void {
     for (let i = 0; i < kCellInOneRow; i++) {
       for (let j = 0; j < kCellInOneRow; j++) {
         const color = this.grid_[i][j].button.style.backgroundColor;
         if (!(color == Color.RED || color == Color.BLUE)) {
-          this.performKNN(i, j);
+          this.performKNN(i, j, weighted);
         }
       }
     }
   }
 
-  performKNN(i: number, j: number) {
+  performKNN(i: number, j: number, weighted: boolean) {
     const listWithDist: CellWithDistToSomePoint[] = this.getListWithDistance(
       i,
       j
     );
 
-    const colorCategory: Color = this.getColorCategory(listWithDist);
+    const colorCategory: Color = this.getColorCategory(listWithDist, weighted);
 
     if (colorCategory == Color.RED) {
       this.grid_[i][j].button.style.backgroundColor = "#f4adad";
@@ -100,22 +100,42 @@ class Grid {
     }
   }
 
-  getColorCategory(listWithDist: CellWithDistToSomePoint[]): Color {
-    let blueCount = 0,
-      redCount = 0;
+  getColorCategory(
+    listWithDist: CellWithDistToSomePoint[],
+    weighted: boolean
+  ): Color {
+    if (!weighted) {
+      let blueCount = 0,
+        redCount = 0;
 
-    for (let i = 0; i < kKNNContant; i++) {
-      if (listWithDist[i].button.style.backgroundColor == Color.RED) {
-        redCount++;
-      } else {
-        blueCount++;
+      for (let i = 0; i < kKNNContant; i++) {
+        if (listWithDist[i].button.style.backgroundColor == Color.RED) {
+          redCount++;
+        } else {
+          blueCount++;
+        }
       }
-    }
 
-    if (blueCount > redCount) {
-      return Color.BLUE;
+      if (blueCount > redCount) {
+        return Color.BLUE;
+      }
+      return Color.RED;
+    } else {
+      let blueWeight = 0,
+        redWeight = 0;
+      for (let i = 0; i < kKNNContant; i++) {
+        if (listWithDist[i].button.style.backgroundColor == Color.RED) {
+          redWeight += 1 / listWithDist[i].dist;
+        } else {
+          blueWeight += 1 / listWithDist[i].dist;
+        }
+      }
+
+      if (blueWeight > redWeight) {
+        return Color.BLUE;
+      }
+      return Color.RED;
     }
-    return Color.RED;
   }
 
   getListWithDistance(i: number, j: number): CellWithDistToSomePoint[] {
@@ -175,6 +195,25 @@ kNNInput.addEventListener("change", () => {
 
 grid.renderGrid(box);
 
-document.querySelector("#calculate-btn")?.addEventListener("click", () => {
-  grid.performKNNForAllCell();
-});
+let haveToPerformWeightedKNN = false;
+const weightedCheckbox: HTMLInputElement | null =
+  document.querySelector("#weighted");
+
+if (weightedCheckbox != null) {
+  weightedCheckbox.addEventListener("click", () => {
+    if (weightedCheckbox.checked == true) {
+      haveToPerformWeightedKNN = true;
+    } else {
+      haveToPerformWeightedKNN = false;
+    }
+  });
+}
+
+const calculateBtn: HTMLButtonElement | null =
+  document.querySelector("#calculate-btn");
+
+if (calculateBtn != null) {
+  calculateBtn.addEventListener("click", () => {
+    grid.performKNNForAllCell(haveToPerformWeightedKNN);
+  });
+}

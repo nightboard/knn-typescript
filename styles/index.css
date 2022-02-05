@@ -4,6 +4,10 @@
   box-sizing: border-box;
 }
 
+div {
+  margin: 0.2rem 0rem;
+}
+
 .box {
   top: 35%;
   left: 50%;
@@ -36,9 +40,10 @@
 }
 
 .selection-box {
-  display: flex;
-  flex-direction: column;
   width: 100px;
+  display: flex;
+  margin: 2rem;
+  flex-direction: column;
 }
 input[type="text"] {
   width: 100px;
